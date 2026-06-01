@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "Олена Петренко",
+    "email": "olena@example.com",
+    "role": "user",
+    "registered": "2026-01-15"
+  },
+  {
+    "id": 2,
+    "name": "Іван Коваль",
+    "email": "ivan@example.com",
+    "role": "user",
+    "registered": "2025-12-03"
+  }
+]

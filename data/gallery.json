@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "title": "Вітрина гітар",
+    "image": "https://img.freepik.com/premium-photo/guitars-showcase-with-guitars-hanging-row_207949-20.jpg",
+    "caption": "Колекція акустичних та електричних гітар."
+  },
+  {
+    "id": 2,
+    "title": "Клавішні інструменти",
+    "image": "https://fs1.secunda.com.ua/content/news/a11476/1.jpg",
+    "caption": "Розділ синтезаторів та піаніно."
+  }
+]
