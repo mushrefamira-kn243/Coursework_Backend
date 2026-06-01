@@ -6,7 +6,7 @@
     <title>Musixx</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body data-user-role="<?= Auth::isAdmin() ? 'admin' : (Auth::check() ? 'user' : 'guest') ?>">
+<body data-user-role="<?= Auth::isAdmin() ? 'admin' : (Auth::check() ? 'user' : 'guest') ?>" data-user-name="<?= htmlspecialchars(Auth::getUserName() ?? '', ENT_QUOTES, 'UTF-8') ?>">
 <header class="site-header">
     <div class="container header-inner">
         <div>

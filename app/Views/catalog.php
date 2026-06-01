@@ -13,13 +13,14 @@ sort($categories);
     <div class="catalog-search-panel">
         <form id="catalog-search-form" class="catalog-search-form" action="javascript:void(0)">
             <input id="catalog-search-name" type="search" placeholder="Шукати за назвою..." autocomplete="off">
-            
             <select id="catalog-search-category" style="background-color: #1a1f2c; color: #ffffff; border: 1px solid #3f4756;">
                 <option value="" style="background-color: #1a1f2c; color: #ffffff;">Усі категорії</option>
                 <?php foreach ($categories as $category): ?>
                     <option value="<?= htmlspecialchars($category) ?>" style="background-color: #1a1f2c; color: #ffffff;"><?= htmlspecialchars($category) ?></option>
                 <?php endforeach; ?>
             </select>
+            <input id="catalog-search-min-price" type="number" placeholder="Мін. ціна" min="0" step="100">
+            <input id="catalog-search-max-price" type="number" placeholder="Макс. ціна" min="0" step="100">
         </form>
     </div>
     <div class="product-grid">

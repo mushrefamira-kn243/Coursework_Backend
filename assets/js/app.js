@@ -99,21 +99,28 @@ document.addEventListener('DOMContentLoaded', function () {
     if (catalogSearchForm) {
         const searchInput = document.getElementById('catalog-search-name');
         const categorySelect = document.getElementById('catalog-search-category');
+        const minPriceInput = document.getElementById('catalog-search-min-price');
+        const maxPriceInput = document.getElementById('catalog-search-max-price');
         const searchMessage = document.getElementById('catalog-search-message');
         const productCards = Array.from(document.querySelectorAll('.product-card'));
 
         const applyCatalogFilters = () => {
             const query = (searchInput.value || '').trim().toLowerCase();
             const category = (categorySelect.value || '').trim();
+            const minPrice = parseFloat(minPriceInput.value) || 0;
+            const maxPrice = parseFloat(maxPriceInput.value) || 0;
             let visibleCount = 0;
 
             productCards.forEach(card => {
                 const item = JSON.parse(card.dataset.item || '{}');
                 const name = (item.name || '').toLowerCase();
                 const cat = (item.category || '').trim();
+                const price = parseFloat(item.price) || 0;
                 const matchesName = query === '' || name.includes(query);
                 const matchesCategory = category === '' || cat === category;
-                if (matchesName && matchesCategory) {
+                const matchesMinPrice = minPrice <= 0 || price >= minPrice;
+                const matchesMaxPrice = maxPrice <= 0 || price <= maxPrice;
+                if (matchesName && matchesCategory && matchesMinPrice && matchesMaxPrice) {
                     card.style.display = '';
                     visibleCount += 1;
                 } else {
@@ -128,6 +135,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         searchInput.addEventListener('input', applyCatalogFilters);
         categorySelect.addEventListener('change', applyCatalogFilters);
+        minPriceInput.addEventListener('input', applyCatalogFilters);
+        maxPriceInput.addEventListener('input', applyCatalogFilters);
+    }
+
+    const userSearchInput = document.getElementById('user-search');
+    if (userSearchInput) {
+        const usersTable = document.querySelector('.data-table[data-module="users"] tbody');
+        userSearchInput.addEventListener('input', function () {
+            const query = (this.value || '').trim().toLowerCase();
+            if (!usersTable) return;
+            Array.from(usersTable.querySelectorAll('tr')).forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
     }
 });
 
@@ -200,6 +222,20 @@ function openProductModal(item) {
         modal.className = 'modal';
         document.body.appendChild(modal);
     }
+    const currentUser = getUserName();
+    const commentFormHtml = currentUser ? `
+        <p class="comment-user-info">Коментар буде додано від імені <strong>${escapeHtml(currentUser)}</strong></p>
+        <form id="modal-comment-form">
+            <label>Оцінка <input type="number" name="rating" value="5" min="1" max="5"></label>
+            <textarea name="comment" placeholder="Ваш коментар" required></textarea>
+            <button type="submit" class="button">Додати</button>
+        </form>
+    ` : `
+        <div class="comment-login-prompt">
+            Будь ласка, <a href="index.php?route=login">увійдіть</a>, щоб залишити коментар.
+        </div>
+    `;
+
     modal.innerHTML = `
         <div class="modal-content" data-product-id="${item.id}">
             <button class="modal-close">×</button>
@@ -210,9 +246,10 @@ function openProductModal(item) {
                     <p class="modal-category">Категорія: ${escapeHtml(item.category || 'Не вказано')}</p>
                     <p class="modal-description">${escapeHtml(item.description || 'Опис відсутній')}</p>
                     <div class="modal-meta">
-                        <span class="modal-price">Ціна: <strong>${Number(item.price).toFixed(2)} ₴</strong></span>
+                        <span class="modal-price">Ціна: <strong>${Number(item.price).toFixed(2)} ₴</strong> | Рейтинг: <strong id="modal-rating">немає оцінок</strong></span>
+                    </div>
+                    <div class="modal-stock-rating">
                         <span class="modal-stock-text">Наявність: <strong id="modal-stock">${item.stock}</strong></span>
-                        <span class="modal-rating">Рейтинг: <strong id="modal-rating">немає оцінок</strong></span>
                     </div>
                     <div class="modal-actions">
                         <label>Кількість <input type="number" id="modal-qty" value="1" min="1" max="${item.stock}"></label>
@@ -224,12 +261,7 @@ function openProductModal(item) {
                     </div>
                     <div class="modal-comment-form-wrapper">
                         <h5>Додати коментар</h5>
-                        <form id="modal-comment-form">
-                            <input type="text" name="author" placeholder="Ваше ім'я" required>
-                            <label>Оцінка <input type="number" name="rating" value="5" min="1" max="5"></label>
-                            <textarea name="comment" placeholder="Ваш коментар"></textarea>
-                            <button type="submit" class="button">Додати</button>
-                        </form>
+                        ${commentFormHtml}
                     </div>
                 </div>
             </div>
@@ -256,18 +288,28 @@ function openProductModal(item) {
         });
     });
 
-    
     loadComments(item.id);
     const form = modal.querySelector('#modal-comment-form');
-    form.addEventListener('submit', function (ev) {
-        ev.preventDefault();
-        const fd = new FormData(form);
-        fd.append('action','comments_add');
-        fd.append('product_id', item.id);
-        fetch('index.php?route=ajax',{method:'POST',body:fd}).then(r=>r.json()).then(res=>{
-            if (res.success) { loadComments(item.id); form.reset(); } else alert(res.message||'Помилка');
+    if (form) {
+        form.addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            const fd = new FormData(form);
+            fd.append('action','comments_add');
+            fd.append('product_id', item.id);
+            fetch('index.php?route=ajax',{method:'POST',body:fd}).then(r=>r.json()).then(res=>{
+                if (res.success) { loadComments(item.id); form.reset(); } else alert(res.message||'Помилка');
+            });
         });
-    });
+    }
+}
+
+function renderStarRating(value) {
+    const stars = Math.round(value || 0);
+    let result = '';
+    for (let i = 0; i < 5; i++) {
+        result += i < stars ? '★' : '☆';
+    }
+    return result;
 }
 
 function openMediaModal(data) {
@@ -306,11 +348,15 @@ function loadComments(productId) {
         holder.innerHTML = '';
         if (res.success && Array.isArray(res.comments) && res.comments.length) {
             const avg = res.comments.reduce((sum, c) => sum + (parseInt(c.rating, 10) || 0), 0) / res.comments.length;
-            if (ratingEl) ratingEl.textContent = avg.toFixed(1) + ' / 5';
+            if (ratingEl) {
+                ratingEl.textContent = avg.toFixed(1) + ' / 5';
+                ratingEl.insertAdjacentHTML('beforeend', ` <span class="comment-stars">${renderStarRating(avg)}</span>`);
+            }
+            const currentUser = getUserName();
             res.comments.forEach(c=>{
                 const el = document.createElement('div'); el.className='comment';
                 let content = `<strong>${escapeHtml(c.author)}</strong> <span class="comment-rating">⭐ ${escapeHtml(c.rating)}</span><div>${escapeHtml(c.comment)}</div>`;
-                if (getUserRole() === 'admin') {
+                if (getUserRole() === 'admin' || (currentUser && currentUser === c.author)) {
                     content += `<button class="button button-secondary comment-delete" data-comment-id="${c.id}">Видалити</button>`;
                 }
                 el.innerHTML = content;
@@ -321,6 +367,10 @@ function loadComments(productId) {
             holder.innerHTML = '<p>Поки що немає коментарів.</p>';
         }
     });
+}
+
+function getUserName() {
+    return document.body.dataset.userName || '';
 }
 
 function getUserRole() {
@@ -399,6 +449,7 @@ function openCartModal() {
         }
         const items = Array.isArray(res.cart) ? res.cart : [];
         const total = items.reduce((sum,item) => sum + (parseFloat(item.price) || 0) * (parseInt(item.qty,10) || 1), 0);
+        const isGuest = getUserRole() === 'guest';
         modal.innerHTML = `
             <div class="modal-content cart-modal-content">
                 <button class="modal-close">×</button>
@@ -416,8 +467,9 @@ function openCartModal() {
                 </div>
                 <div class="cart-footer">
                     <strong>Підсумок: ${total.toFixed(2)} ₴</strong>
-                    <button id="cart-checkout" class="button" ${items.length ? '' : 'disabled'}>Оформити замовлення</button>
+                    <button id="cart-checkout" class="button" ${items.length && !isGuest ? '' : 'disabled'}>${isGuest ? 'Увійдіть для оформлення' : 'Оформити замовлення'}</button>
                 </div>
+                ${isGuest ? '<p class="cart-note">Тільки авторизовані користувачі можуть оформити замовлення.</p>' : ''}
             </div>
         `;
         const closeButton = modal.querySelector('.modal-close');

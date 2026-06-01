@@ -8,6 +8,9 @@
             <a class="button" href="index.php?route=admin">Назад до панелі</a>
         </div>
     </div>
+    <div class="admin-search-row">
+        <input id="user-search" type="search" placeholder="Шукати користувача за ім'ям, логіном або email...">
+    </div>
 
     <div class="table-wrap">
         <table class="data-table" data-module="users">

@@ -127,7 +127,20 @@ class AjaxController
         if ($id <= 0) {
             return ['success' => false, 'message' => 'Невірний ID коментаря'];
         }
-        $stmt = Database::getInstance()->getConnection()->prepare('DELETE FROM comments WHERE id = :id');
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare('SELECT author FROM comments WHERE id = :id LIMIT 1');
+        $stmt->execute(['id' => $id]);
+        $comment = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$comment) {
+            return ['success' => false, 'message' => 'Коментар не знайдено'];
+        }
+        if (!Auth::check()) {
+            return ['success' => false, 'message' => 'Недостатньо прав'];
+        }
+        if (!Auth::isAdmin() && trim($comment['author']) !== trim($_SESSION['user_name'] ?? '')) {
+            return ['success' => false, 'message' => 'Видаляти можна лише власні коментарі'];
+        }
+        $stmt = $db->prepare('DELETE FROM comments WHERE id = :id');
         $stmt->execute(['id' => $id]);
         if ($stmt->rowCount() === 0) {
             return ['success' => false, 'message' => 'Коментар не знайдено'];
@@ -190,6 +203,9 @@ class AjaxController
 
     private function checkout(array $data): array
     {
+        if (!Auth::check()) {
+            return ['success' => false, 'message' => 'Тільки авторизовані користувачі можуть оформлювати замовлення'];
+        }
         $cart = $_SESSION['cart'] ?? [];
         if (empty($cart)) return ['success' => false, 'message' => 'Кошик порожній'];
         $db = Database::getInstance()->getConnection();
@@ -201,15 +217,14 @@ class AjaxController
                 if (!$p) continue;
                 $total += $p['price'] * $qty;
             }
-            $stmt = $db->prepare('INSERT INTO orders (user_id, total, created_at) VALUES (:user_id, :total, :created_at)');
-            $stmt->execute(['user_id' => $_SESSION['user_id'] ?? null, 'total' => $total, 'created_at' => date('Y-m-d H:i:s')]);
+            $stmt = $db->prepare('INSERT INTO orders (user_id, total, status, created_at) VALUES (:user_id, :total, :status, :created_at)');
+            $stmt->execute(['user_id' => $_SESSION['user_id'] ?? null, 'total' => $total, 'status' => 'in_process', 'created_at' => date('Y-m-d H:i:s')]);
             $orderId = intval($db->lastInsertId());
             foreach ($cart as $pid => $qty) {
                 $p = (new ProductModel())->findById($pid);
                 if (!$p) continue;
                 $stmt = $db->prepare('INSERT INTO order_items (order_id, product_id, qty, price) VALUES (:order_id, :product_id, :qty, :price)');
                 $stmt->execute(['order_id'=>$orderId,'product_id'=>$pid,'qty'=>$qty,'price'=>$p['price']]);
-               
                 $db->prepare('UPDATE products SET stock = stock - :qty WHERE id = :id')->execute(['qty'=>$qty,'id'=>$pid]);
             }
             $db->commit();
@@ -224,11 +239,16 @@ class AjaxController
 
     private function addComment(array $data): array
     {
+        if (!Auth::check()) {
+            return ['success' => false, 'message' => 'Тільки авторизовані користувачі можуть залишати коментарі'];
+        }
         $product_id = intval($data['product_id'] ?? 0);
-        $author = trim($data['author'] ?? '');
+        $author = trim($_SESSION['user_name'] ?? '');
         $rating = intval($data['rating'] ?? 5);
         $comment = trim($data['comment'] ?? '');
-        if ($product_id <= 0 || $author === '') return ['success'=>false,'message'=>'Невірні дані'];
+        if ($product_id <= 0 || $author === '' || $comment === '') {
+            return ['success' => false, 'message' => 'Невірні дані'];
+        }
         $stmt = Database::getInstance()->getConnection()->prepare('INSERT INTO comments (product_id, author, rating, comment, created_at) VALUES (:product_id,:author,:rating,:comment,:created_at)');
         $stmt->execute(['product_id'=>$product_id,'author'=>$author,'rating'=>$rating,'comment'=>$comment,'created_at'=>date('Y-m-d H:i:s')]);
         return ['success'=>true,'message'=>'Коментар додано'];
