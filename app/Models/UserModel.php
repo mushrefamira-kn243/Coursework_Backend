@@ -25,6 +25,7 @@ class UserModel extends BaseModel
         }
         $registered = trim($data['registered'] ?? date('Y-m-d'));
         $password = trim($data['password'] ?? '');
+        $avatar = trim($data['avatar'] ?? '');
 
         if ($login === '') {
             return ['success' => false, 'message' => 'Логін обов’язковий'];
@@ -39,22 +40,28 @@ class UserModel extends BaseModel
             return ['success' => false, 'message' => 'Такий логін вже існує'];
         }
 
+        if ($id > 0 && $avatar === '') {
+            $current = $this->findById($id);
+            $avatar = $current['avatar'] ?? '';
+        }
+
         if ($id === 0) {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $this->db->prepare('INSERT INTO users (login, name, email, password, role, registered) VALUES (:login, :name, :email, :password, :role, :registered)');
+            $stmt = $this->db->prepare('INSERT INTO users (login, name, email, password, role, registered, avatar) VALUES (:login, :name, :email, :password, :role, :registered, :avatar)');
             $stmt->execute([
                 'login' => $login,
                 'name' => $name,
                 'email' => $email,
                 'password' => $passwordHash,
                 'role' => $role,
-                'registered' => $registered
+                'registered' => $registered,
+                'avatar' => $avatar
             ]);
             $id = intval($this->db->lastInsertId());
         } else {
             $passwordHash = $password !== '' ? password_hash($password, PASSWORD_DEFAULT) : null;
             if ($passwordHash !== null) {
-                $stmt = $this->db->prepare('UPDATE users SET login = :login, name = :name, email = :email, password = :password, role = :role, registered = :registered WHERE id = :id');
+                $stmt = $this->db->prepare('UPDATE users SET login = :login, name = :name, email = :email, password = :password, role = :role, registered = :registered, avatar = :avatar WHERE id = :id');
                 $stmt->execute([
                     'login' => $login,
                     'name' => $name,
@@ -62,16 +69,18 @@ class UserModel extends BaseModel
                     'password' => $passwordHash,
                     'role' => $role,
                     'registered' => $registered,
+                    'avatar' => $avatar,
                     'id' => $id
                 ]);
             } else {
-                $stmt = $this->db->prepare('UPDATE users SET login = :login, name = :name, email = :email, role = :role, registered = :registered WHERE id = :id');
+                $stmt = $this->db->prepare('UPDATE users SET login = :login, name = :name, email = :email, role = :role, registered = :registered, avatar = :avatar WHERE id = :id');
                 $stmt->execute([
                     'login' => $login,
                     'name' => $name,
                     'email' => $email,
                     'role' => $role,
                     'registered' => $registered,
+                    'avatar' => $avatar,
                     'id' => $id
                 ]);
             }
@@ -85,7 +94,20 @@ class UserModel extends BaseModel
             'name' => $name,
             'email' => $email,
             'role' => $role,
-            'registered' => $registered
+            'registered' => $registered,
+            'avatar' => $avatar
         ]];
+    }
+
+    public function delete(int $id): array
+    {
+        $user = $this->findById($id);
+        if (!$user) {
+            return ['success' => false, 'message' => 'Користувача не знайдено'];
+        }
+        if (($user['role'] ?? '') === 'admin') {
+            return ['success' => false, 'message' => 'Адміністратора не можна видалити'];
+        }
+        return parent::delete($id);
     }
 }

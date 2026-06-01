@@ -11,6 +11,7 @@ class AdminController extends Controller
 {
     private $modules = [
         'products' => 'Каталог продукції',
+        'orders' => 'Замовлення',
         'news' => 'Новини',
         'users' => 'Користувачі сайту',
         'gallery' => 'Фотогалерея',
@@ -63,14 +64,14 @@ class AdminController extends Controller
         }
 
         try {
-            $stmt = $db->query('SELECT p.id, p.name, SUM(oi.qty) AS sold_qty, SUM(oi.qty * oi.price) AS revenue FROM order_items oi JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY sold_qty DESC LIMIT 10');
+            $stmt = $db->query('SELECT p.id, p.name, SUM(oi.qty) AS sold_qty, SUM(oi.qty * oi.price) AS revenue FROM order_items oi JOIN orders o ON oi.order_id = o.id JOIN products p ON p.id = oi.product_id WHERE o.status = "completed" GROUP BY p.id ORDER BY sold_qty DESC LIMIT 10');
             $topProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             $topProducts = [];
         }
 
         try {
-            $stmt = $db->query("SELECT substr(created_at, 1, 10) AS day, COUNT(*) AS orders, SUM(total) AS revenue FROM orders GROUP BY day ORDER BY day DESC LIMIT 15");
+            $stmt = $db->query("SELECT substr(created_at, 1, 10) AS day, COUNT(*) AS orders, SUM(total) AS revenue FROM orders WHERE status = 'completed' GROUP BY day ORDER BY day DESC LIMIT 15");
             $dailySales = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             $dailySales = [];
@@ -104,8 +105,11 @@ class AdminController extends Controller
     {
         switch ($module) {
             case 'products':
-                $model = new ProductModel();
-                return $model->getAll();
+                return (new ProductModel())->getAll();
+            case 'orders':
+                $db = Database::getInstance()->getConnection();
+                $stmt = $db->query('SELECT o.id, o.user_id, o.total, o.status, o.created_at, u.name AS user_name FROM orders o LEFT JOIN users u ON u.id = o.user_id ORDER BY o.created_at DESC');
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
             case 'news':
                 return (new NewsModel())->getAll();
             case 'users':

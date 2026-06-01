@@ -8,7 +8,7 @@
     </div>
     <div class="news-grid">
         <?php foreach ($items as $item): ?>
-            <article class="news-card">
+            <article class="news-card news-article" data-image="<?= htmlspecialchars($item['image'] ?? '') ?>" data-title="<?= htmlspecialchars($item['title']) ?>" data-description="<?= htmlspecialchars($item['content'] ?: $item['summary']) ?>" data-date="<?= htmlspecialchars($item['date']) ?>">
                 <?php if (!empty($item['image'])): ?>
                     <div class="product-image" style="background-image: url('<?= htmlspecialchars($item['image']) ?>');"></div>
                 <?php endif; ?>

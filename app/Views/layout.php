@@ -6,7 +6,7 @@
     <title>Musixx</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body data-user-role="<?= Auth::isAdmin() ? 'admin' : (Auth::check() ? 'user' : 'guest') ?>">
 <header class="site-header">
     <div class="container header-inner">
         <div>
@@ -19,9 +19,10 @@
             <a href="index.php?route=news">Новини</a>
             <a href="index.php?route=gallery">Галерея</a>
             <a href="index.php?route=page&slug=about-us">Про нас</a>
-            <a href="javascript:void(0)" id="theme-toggle">Тема</a>
+            <a href="javascript:void(0)" id="theme-toggle" title="Перемкнути тему">🌗</a>
             <a href="javascript:void(0)" id="cart-link">Кошик (<span id="cart-count">0</span>)</a>
             <?php if (Auth::check()): ?>
+                <a href="index.php?route=profile">Профіль</a>
                 <?php if (Auth::isAdmin()): ?>
                     <a href="index.php?route=admin">Панель</a>
                 <?php endif; ?>

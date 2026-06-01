@@ -25,10 +25,13 @@ CREATE TABLE IF NOT EXISTS news (
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    login TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     role TEXT NOT NULL,
-    registered TEXT NOT NULL
+    registered TEXT NOT NULL,
+    avatar TEXT DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS gallery (
@@ -50,6 +53,7 @@ CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     total REAL NOT NULL,
+    status TEXT NOT NULL DEFAULT 'in_process',
     created_at TEXT NOT NULL
 );
 
@@ -93,9 +97,9 @@ INSERT INTO news (title, summary, content, date, image) VALUES
 ('Літній розпродаж музичних інструментів', 'Знижки до 25% на обрані гітари та клавішні.', 'Літній сезон починається з вигідних пропозицій — оберіть свій інструмент вже сьогодні.', '2026-06-01', 'https://via.placeholder.com/520x320?text=Sale'),
 ('Нові професійні барабани у каталозі', 'Модельні ряди для початківців та професіоналів.', 'Пропонуємо якісні ударні установки з доставкою по Україні.', '2026-05-25', 'https://via.placeholder.com/520x320?text=Drums');
 
-INSERT INTO users (name, email, role, registered) VALUES
-('Олена Петренко', 'olena@example.com', 'user', '2026-01-15'),
-('Іван Коваль', 'ivan@example.com', 'user', '2025-12-03');
+INSERT INTO users (login, password, name, email, role, registered, avatar) VALUES
+('olena', '', 'Олена Петренко', 'olena@example.com', 'user', '2026-01-15', ''),
+('ivan', '', 'Іван Коваль', 'ivan@example.com', 'user', '2025-12-03', '');
 
 INSERT INTO gallery (title, image, caption) VALUES
 ('Вітрина гітар', 'https://via.placeholder.com/520x320?text=Guitar', 'Колекція акустичних та електричних гітар.'),

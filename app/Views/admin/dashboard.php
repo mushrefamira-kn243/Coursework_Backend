@@ -8,6 +8,7 @@
             <a class="admin-nav-link active" href="index.php?route=admin">Головна</a>
             <a class="admin-nav-link" href="index.php?route=admin_analytics">Аналітика продажів</a>
             <a class="admin-nav-link" href="index.php?route=module&name=products">Товари</a>
+            <a class="admin-nav-link" href="index.php?route=module&name=orders">Замовлення</a>
             <a class="admin-nav-link" href="index.php?route=module&name=news">Новини</a>
             <a class="admin-nav-link" href="index.php?route=module&name=gallery">Галерея</a>
             <a class="admin-nav-link" href="index.php?route=module&name=pages">Сторінки</a>

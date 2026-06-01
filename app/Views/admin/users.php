@@ -34,7 +34,11 @@
                         <td><?= htmlspecialchars($item['registered']) ?></td>
                         <td>
                             <button class="button button-small" data-action="edit">Редагувати</button>
-                            <button class="button button-small button-secondary" data-action="delete">Видалити</button>
+                            <?php if (($item['role'] ?? '') !== 'admin'): ?>
+                                <button class="button button-small button-secondary" data-action="delete">Видалити</button>
+                            <?php else: ?>
+                                <button class="button button-small button-secondary" disabled>Захищено</button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

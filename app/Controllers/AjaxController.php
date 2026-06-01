@@ -18,7 +18,7 @@ class AjaxController
 
         $action = $_POST['action'] ?? '';
         $module = $_POST['module'] ?? '';
-        $adminActions = ['load', 'save', 'delete'];
+        $adminActions = ['load', 'save', 'delete', 'comment_delete', 'order_status'];
 
         if (in_array($action, $adminActions, true)) {
             if (!Auth::check() || !Auth::isAdmin()) {
@@ -53,6 +53,12 @@ class AjaxController
                 break;
             case 'comments_get':
                 $result = $this->getComments($_POST);
+                break;
+            case 'comment_delete':
+                $result = $this->deleteComment(intval($_POST['id'] ?? 0));
+                break;
+            case 'order_status':
+                $result = $this->updateOrderStatus($_POST);
                 break;
             case 'delete':
                 $result = $this->deleteItem($module, intval($_POST['id'] ?? 0));
@@ -114,6 +120,35 @@ class AjaxController
             default:
                 return ['success' => false, 'message' => 'Невідомий модуль'];
         }
+    }
+
+    private function deleteComment(int $id): array
+    {
+        if ($id <= 0) {
+            return ['success' => false, 'message' => 'Невірний ID коментаря'];
+        }
+        $stmt = Database::getInstance()->getConnection()->prepare('DELETE FROM comments WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        if ($stmt->rowCount() === 0) {
+            return ['success' => false, 'message' => 'Коментар не знайдено'];
+        }
+        return ['success' => true, 'message' => 'Коментар видалено'];
+    }
+
+    private function updateOrderStatus(array $data): array
+    {
+        $id = intval($data['id'] ?? 0);
+        $status = trim($data['status'] ?? '');
+        $validStatuses = ['in_process', 'completed', 'cancelled'];
+        if ($id <= 0 || !in_array($status, $validStatuses, true)) {
+            return ['success' => false, 'message' => 'Невірні дані для статусу'];
+        }
+        $stmt = Database::getInstance()->getConnection()->prepare('UPDATE orders SET status = :status WHERE id = :id');
+        $stmt->execute(['status' => $status, 'id' => $id]);
+        if ($stmt->rowCount() === 0) {
+            return ['success' => false, 'message' => 'Замовлення не знайдено або статус не змінено'];
+        }
+        return ['success' => true, 'message' => 'Статус замовлення оновлено'];
     }
 
     private function addToCart(array $data): array

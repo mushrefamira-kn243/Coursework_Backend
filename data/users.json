@@ -5,7 +5,8 @@
         "email": "olena@gmail.com",
         "role": "user",
         "registered": "2026-01-15",
-        "login": "ole"
+        "login": "ole",
+        "avatar": ""
     },
     {
         "id": 2,
@@ -13,7 +14,8 @@
         "email": "ivan@gmail.com",
         "role": "user",
         "registered": "2025-12-03",
-        "login": "ivan"
+        "login": "ivan",
+        "avatar": ""
     },
     {
         "id": 3,
@@ -21,7 +23,8 @@
         "email": "admin@gmail.com",
         "role": "admin",
         "registered": "2026-01-01",
-        "login": "admin"
+        "login": "admin",
+        "avatar": ""
     },
     {
         "id": 4,
@@ -29,7 +32,8 @@
         "email": "user@gmail.com",
         "role": "user",
         "registered": "2026-01-15",
-        "login": "user"
+        "login": "user",
+        "avatar": "uploads\/avatars\/avatar_4_1780309206.png"
     },
     {
         "id": 5,
@@ -37,6 +41,7 @@
         "email": "artorias@gmail.com",
         "role": "user",
         "registered": "2026-05-31",
-        "login": "artorias_ashen_one"
+        "login": "artorias_ashen_one",
+        "avatar": ""
     }
 ]

@@ -61,7 +61,11 @@ class Database
         ]);
         $this->migrateTableColumns('users', [
             'login' => "TEXT DEFAULT ''",
-            'password' => "TEXT DEFAULT ''"
+            'password' => "TEXT DEFAULT ''",
+            'avatar' => "TEXT DEFAULT ''"
+        ]);
+        $this->migrateTableColumns('orders', [
+            'status' => "TEXT DEFAULT 'in_process'"
         ]);
 
         $this->normalizeUserRoles();

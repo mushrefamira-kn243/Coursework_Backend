@@ -78,6 +78,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    document.body.addEventListener('change', function (event) {
+        if (event.target.matches('.order-status')) {
+            const select = event.target;
+            const orderId = select.dataset.id;
+            const status = select.value;
+            const fd = new FormData();
+            fd.append('action','order_status');
+            fd.append('id', orderId);
+            fd.append('status', status);
+            fetch('index.php?route=ajax',{method:'POST',body:fd}).then(r=>r.json()).then(res=>{
+                if (!res.success) {
+                    alert(res.message || 'Не вдалося оновити статус');
+                }
+            });
+        }
+    });
+
     const catalogSearchForm = document.getElementById('catalog-search-form');
     if (catalogSearchForm) {
         const searchInput = document.getElementById('catalog-search-name');
@@ -140,6 +157,38 @@ document.addEventListener('click', function (e) {
     if (card && card.dataset && card.dataset.item) {
         const item = JSON.parse(card.dataset.item);
         openProductModal(item);
+        return;
+    }
+
+    const mediaCard = e.target.closest('.gallery-card, .news-article');
+    if (mediaCard && mediaCard.dataset) {
+        openMediaModal({
+            image: mediaCard.dataset.image || '',
+            title: mediaCard.dataset.title || '',
+            description: mediaCard.dataset.description || '',
+            date: mediaCard.dataset.date || ''
+        });
+        return;
+    }
+
+    const commentDelete = e.target.closest('.comment-delete');
+    if (commentDelete) {
+        e.preventDefault();
+        const commentId = commentDelete.dataset.commentId;
+        if (!commentId || !confirm('Видалити цей коментар?')) return;
+        const fd = new FormData();
+        fd.append('action','comment_delete');
+        fd.append('id', commentId);
+        fetch('index.php?route=ajax',{method:'POST',body:fd}).then(r=>r.json()).then(res=>{
+            if (res.success) {
+                const productId = document.querySelector('.modal-content')?.dataset.productId;
+                if (productId) {
+                    loadComments(parseInt(productId, 10));
+                }
+            } else {
+                alert(res.message || 'Не вдалося видалити коментар');
+            }
+        });
     }
 });
 
@@ -152,7 +201,7 @@ function openProductModal(item) {
         document.body.appendChild(modal);
     }
     modal.innerHTML = `
-        <div class="modal-content">
+        <div class="modal-content" data-product-id="${item.id}">
             <button class="modal-close">×</button>
             <div class="modal-grid">
                 <div class="modal-image" style="background-image:url('${escapeHtml(item.image || 'https://via.placeholder.com/520x320?text=Фото')}')"></div>
@@ -221,6 +270,33 @@ function openProductModal(item) {
     });
 }
 
+function openMediaModal(data) {
+    let modal = document.getElementById('media-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'media-modal';
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+    }
+    modal.innerHTML = `
+        <div class="modal-content media-modal-content">
+            <button class="modal-close">×</button>
+            ${data.image ? `<div class="modal-image media-modal-image" style="background-image:url('${escapeHtml(data.image)}')"></div>` : ''}
+            <div class="media-modal-body">
+                <h2>${escapeHtml(data.title)}</h2>
+                ${data.date ? `<p class="media-modal-date">${escapeHtml(data.date)}</p>` : ''}
+                <p class="modal-description">${escapeHtml(data.description || 'Опис відсутній')}</p>
+            </div>
+        </div>
+    `;
+    modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
 function loadComments(productId) {
     const fd = new FormData(); fd.append('action','comments_get'); fd.append('product_id', productId);
     fetch('index.php?route=ajax',{method:'POST',body:fd}).then(r=>r.json()).then(res=>{
@@ -233,7 +309,11 @@ function loadComments(productId) {
             if (ratingEl) ratingEl.textContent = avg.toFixed(1) + ' / 5';
             res.comments.forEach(c=>{
                 const el = document.createElement('div'); el.className='comment';
-                el.innerHTML = `<strong>${escapeHtml(c.author)}</strong> <span class="comment-rating">⭐ ${escapeHtml(c.rating)}</span><div>${escapeHtml(c.comment)}</div>`;
+                let content = `<strong>${escapeHtml(c.author)}</strong> <span class="comment-rating">⭐ ${escapeHtml(c.rating)}</span><div>${escapeHtml(c.comment)}</div>`;
+                if (getUserRole() === 'admin') {
+                    content += `<button class="button button-secondary comment-delete" data-comment-id="${c.id}">Видалити</button>`;
+                }
+                el.innerHTML = content;
                 holder.appendChild(el);
             });
         } else {
@@ -241,6 +321,10 @@ function loadComments(productId) {
             holder.innerHTML = '<p>Поки що немає коментарів.</p>';
         }
     });
+}
+
+function getUserRole() {
+    return document.body.dataset.userRole || 'guest';
 }
 
 function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

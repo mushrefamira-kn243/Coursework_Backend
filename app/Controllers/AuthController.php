@@ -73,4 +73,69 @@ class AuthController extends Controller
         header('Location: index.php');
         exit;
     }
+
+    public function profile()
+    {
+        if (!Auth::check()) {
+            header('Location: index.php?route=login');
+            exit;
+        }
+
+        $userModel = new UserModel();
+        $user = $userModel->findById(intval($_SESSION['user_id'] ?? 0));
+        if (!$user) {
+            header('Location: index.php');
+            exit;
+        }
+
+        $message = null;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = trim($_POST['name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $avatarPath = $user['avatar'] ?? '';
+
+            if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+                $tmp = $_FILES['avatar']['tmp_name'];
+                $filename = basename($_FILES['avatar']['name']);
+                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                $allowed = ['png', 'jpg', 'jpeg', 'gif'];
+                if (in_array($ext, $allowed, true)) {
+                    $uploadDir = __DIR__ . '/../../uploads/avatars';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+                    $newName = 'avatar_' . intval($user['id']) . '_' . time() . '.' . $ext;
+                    $destination = $uploadDir . '/' . $newName;
+                    if (move_uploaded_file($tmp, $destination)) {
+                        $avatarPath = 'uploads/avatars/' . $newName;
+                    }
+                }
+            }
+
+            $profileData = [
+                'id' => intval($user['id']),
+                'login' => $user['login'] ?? '',
+                'name' => $name,
+                'email' => $email,
+                'role' => $user['role'] ?? 'user',
+                'registered' => $user['registered'] ?? date('Y-m-d'),
+                'avatar' => $avatarPath
+            ];
+
+            if (trim($_POST['password'] ?? '') !== '') {
+                $profileData['password'] = trim($_POST['password']);
+            }
+
+            $result = $userModel->save($profileData);
+            $message = $result['message'] ?? null;
+            if ($result['success']) {
+                $user = $userModel->findById(intval($user['id']));
+            }
+        }
+
+        $this->renderLayout('profile', [
+            'user' => $user,
+            'message' => $message
+        ]);
+    }
 }

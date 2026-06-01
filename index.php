@@ -37,6 +37,10 @@ switch ($path) {
         $controller = new AdminController();
         $controller->module();
         break;
+    case 'profile':
+        $controller = new AuthController();
+        $controller->profile();
+        break;
     case 'catalog':
         $controller = new HomeController();
         $controller->catalog();
