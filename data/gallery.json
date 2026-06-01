@@ -1,14 +1,14 @@
 [
-  {
-    "id": 1,
-    "title": "Вітрина гітар",
-    "image": "https://img.freepik.com/premium-photo/guitars-showcase-with-guitars-hanging-row_207949-20.jpg",
-    "caption": "Колекція акустичних та електричних гітар."
-  },
-  {
-    "id": 2,
-    "title": "Клавішні інструменти",
-    "image": "https://fs1.secunda.com.ua/content/news/a11476/1.jpg",
-    "caption": "Розділ синтезаторів та піаніно."
-  }
+    {
+        "id": 1,
+        "title": "Вітрина гітар",
+        "image": "https:\/\/preview.redd.it\/new-guitar-wall-hanging-system-v0-fbiywnko1uvd1.jpeg?auto=webp&s=b96bcfc1d6fb733f004019a62a4ce5af52ba4040",
+        "caption": "Колекція акустичних та електричних гітар."
+    },
+    {
+        "id": 2,
+        "title": "Клавішні інструменти",
+        "image": "https:\/\/images.prom.ua\/3185980484_w$%7Bwidth%7D_h$%7Bheight%7D_vidi-klavishnih-muzichnih.jpg",
+        "caption": "Розділ синтезаторів та піаніно."
+    }
 ]

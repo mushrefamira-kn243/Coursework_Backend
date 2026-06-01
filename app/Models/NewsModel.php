@@ -23,6 +23,8 @@ class NewsModel extends BaseModel
             $stmt->execute(compact('title', 'summary', 'content', 'date', 'image', 'id'));
         }
 
+        $this->exportToJson();
+
         return ['success' => true, 'message' => 'Новина збережена', 'item' => [
             'id' => $id,
             'title' => $title,

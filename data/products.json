@@ -1,18 +1,137 @@
 [
-  {
-    "id": 1,
-    "name": "Акустична гітара Yamaha F310",
-    "category": "Гітари",
-    "price": 4999.00,
-    "description": "Універсальна акустична гітара для початківців.",
-    "stock": 8
-  },
-  {
-    "id": 2,
-    "name": "Електрогітара Fender Stratocaster",
-    "category": "Електрогітари",
-    "price": 18999.00,
-    "description": "Класичний звук та зручний гриф.",
-    "stock": 4
-  }
+    {
+        "id": 1,
+        "name": "Акустична гітара Yamaha F310",
+        "category": "Гітари",
+        "price": 4999,
+        "description": "Універсальна акустична гітара для початківців.",
+        "stock": 3,
+        "image": "https:\/\/muzeconom.com.ua\/wp-content\/uploads\/2021\/12\/akusticheskaya-gitara-yamaha-f310-cs-50614494797563.jpeg"
+    },
+    {
+        "id": 2,
+        "name": "Електрогітара Fender Stratocaster",
+        "category": "Електрогітари",
+        "price": 18999,
+        "description": "Класичний звук та зручний гриф.",
+        "stock": 3,
+        "image": "https:\/\/musician.ua\/image\/cache\/catalog\/desc\/fender\/standard-stratocaster-hss-lrl\/candy-cola\/musicianua_fender_standard-stratocaster-hss-lrl-candy-cola_1-900x900.jpg"
+    },
+    {
+        "id": 3,
+        "name": "Клавішний синтезатор Korg",
+        "category": "Клавішні інструменти",
+        "price": 12999,
+        "description": "Портативний синтезатор для сцени та студії.",
+        "stock": 6,
+        "image": "https:\/\/prodj.ua\/image\/cache\/catalog\/wsfa\/krkkk\/newautum\/newera\/korektnanazva\/newdecember\/zikr\/2025jan\/janyarrrr2\/kronos61-757x757.webp"
+    },
+    {
+        "id": 4,
+        "name": "Бас-гітара Ibanez GSR200",
+        "category": "Гітари",
+        "price": 14999,
+        "description": "Легка та збалансована бас-гітара для ритму та соло.",
+        "stock": 5,
+        "image": "https:\/\/images.prom.ua\/6764097153_w1280_h640_6764097153.jpg"
+    },
+    {
+        "id": 5,
+        "name": "Класична гітара Cordoba C3M",
+        "category": "Гітари",
+        "price": 7999,
+        "description": "Комфортний гриф та теплий звук для класичної музики.",
+        "stock": 7,
+        "image": "https:\/\/rockstar.com.ua\/image\/cache\/catalog\/image\/cache\/catalog\/img_tovar\/5\/473486038-cordoba-cordoba-c3m-klasichna-gitara-sn-800x800.webp"
+    },
+    {
+        "id": 6,
+        "name": "Укулеле Kala KA-15S",
+        "category": "Гітари",
+        "price": 2599,
+        "description": "Компактний інструмент для подорожей та навчання.",
+        "stock": 12,
+        "image": "https:\/\/images.prom.ua\/6300765887_w300_h300_kala-ka-15s-soprano.jpg"
+    },
+    {
+        "id": 7,
+        "name": "Портативне піаніно Yamaha P-45",
+        "category": "Клавішні інструменти",
+        "price": 16999,
+        "description": "Реалістичний звук та компактний дизайн для дому.",
+        "stock": 5,
+        "image": "https:\/\/jam.ua\/images\/item\/P-145_z_0001.64c7ad9794ae7.jpg"
+    },
+    {
+        "id": 8,
+        "name": "MIDI-клавіатура Akai MPK Mini",
+        "category": "Клавішні інструменти",
+        "price": 4999,
+        "description": "Універсальний MIDI контролер для створення музики.",
+        "stock": 10,
+        "image": "https:\/\/content2.rozetka.com.ua\/goods\/images\/big\/635766177.png"
+    },
+    {
+        "id": 9,
+        "name": "Цифрове піаніно Casio Privia",
+        "category": "Клавішні інструменти",
+        "price": 21999,
+        "description": "Висока якість звучання та легка клавіатура.",
+        "stock": 3,
+        "image": "https:\/\/acropolis.ua\/include\/images\/detail-more\/48019\/662b992e24d85.jpg"
+    },
+    {
+        "id": 10,
+        "name": "Клавішна станція Roland GO:PIANO",
+        "category": "Клавішні інструменти",
+        "price": 8999,
+        "description": "Ідеальний інструмент для навчання та миттєвого створення музики.",
+        "stock": 8,
+        "image": "https:\/\/portativ.ua\/media\/cache\/images\/1\/image\/750x700\/602f0fa2c1f0d1ba5e241f914e856ff9\/catalog\/product\/r\/e84cfd9e4f14bad94f100785ee0617d9.jpg"
+    },
+    {
+        "id": 11,
+        "name": "Ударна установка Pearl Roadshow",
+        "category": "Ударні",
+        "price": 25999,
+        "description": "Повний набір для сучасного барабанщика.",
+        "stock": 2,
+        "image": "https:\/\/lanota.com.ua\/content\/images\/25\/480x480l50nn0\/47960248046223.jpg"
+    },
+    {
+        "id": 12,
+        "name": "Електронна барабанна установка Alesis Nitro",
+        "category": "Ударні",
+        "price": 13999,
+        "description": "Компактний електронний набір для тренувань і виступів.",
+        "stock": 4,
+        "image": "https:\/\/www.music-house.in.ua\/wp-content\/uploads\/2021\/12\/1-334.webp"
+    },
+    {
+        "id": 13,
+        "name": "Барабанні палички Vic Firth",
+        "category": "Ударні",
+        "price": 499,
+        "description": "Надійні палички для яскравого та точного звучання.",
+        "stock": 30,
+        "image": "https:\/\/rockstar.com.ua\/image\/cache\/catalog\/image\/cache\/catalog\/img_tovar\/0\/ge-cache-catalog-99995-234750-234750_vicfirth_spe2_signature_series_peter_erskine_1-400x350-800x800.webp"
+    },
+    {
+        "id": 14,
+        "name": "Перкусійні бонго Meinl",
+        "category": "Ударні",
+        "price": 7499,
+        "description": "Яскраві тони для живих виступів та студії.",
+        "stock": 6,
+        "image": "https:\/\/meinl.com.ua\/image\/cache\/catalog\/migrated\/image\/data\/%D0%9F%D0%B5%D1%80%D0%BA%D1%83%D1%81%D1%81%D0%B8%D1%8F\/bongo\/BPP-1\/BPP-1_web_main-1700x1396.jpg"
+    },
+    {
+        "id": 15,
+        "name": "Тарілка Paiste PST5 16\"",
+        "category": "Ударні",
+        "price": 3499,
+        "description": "Стабільний яркий звук для рок та поп музики.",
+        "stock": 8,
+        "image": "https:\/\/hitonline.ua\/icache\/bigproduct_5632.jpg"
+    }
 ]

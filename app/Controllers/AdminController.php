@@ -20,7 +20,7 @@ class AdminController extends Controller
     public function index()
     {
         $this->requireLogin();
-        // basic analytics
+         
         $db = Database::getInstance()->getConnection();
         $stats = [];
         $stats['products'] = intval($db->query('SELECT COUNT(*) FROM products')->fetchColumn() ?? 0);

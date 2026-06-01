@@ -77,6 +77,8 @@ class UserModel extends BaseModel
             }
         }
 
+        $this->exportToJson();
+
         return ['success' => true, 'message' => 'Користувача збережено', 'item' => [
             'id' => $id,
             'login' => $login,

@@ -174,10 +174,11 @@ class AjaxController
                 if (!$p) continue;
                 $stmt = $db->prepare('INSERT INTO order_items (order_id, product_id, qty, price) VALUES (:order_id, :product_id, :qty, :price)');
                 $stmt->execute(['order_id'=>$orderId,'product_id'=>$pid,'qty'=>$qty,'price'=>$p['price']]);
-                // decrement stock
+               
                 $db->prepare('UPDATE products SET stock = stock - :qty WHERE id = :id')->execute(['qty'=>$qty,'id'=>$pid]);
             }
             $db->commit();
+            (new ProductModel())->exportToJson();
             unset($_SESSION['cart']);
             return ['success' => true, 'message' => 'Замовлення оформлено'];
         } catch (Exception $e) {

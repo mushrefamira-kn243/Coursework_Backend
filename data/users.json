@@ -1,16 +1,42 @@
 [
-  {
-    "id": 1,
-    "name": "Олена Петренко",
-    "email": "olena@example.com",
-    "role": "user",
-    "registered": "2026-01-15"
-  },
-  {
-    "id": 2,
-    "name": "Іван Коваль",
-    "email": "ivan@example.com",
-    "role": "user",
-    "registered": "2025-12-03"
-  }
+    {
+        "id": 1,
+        "name": "Олена Петренко",
+        "email": "olena@gmail.com",
+        "role": "user",
+        "registered": "2026-01-15",
+        "login": "ole"
+    },
+    {
+        "id": 2,
+        "name": "Іван Коваль",
+        "email": "ivan@gmail.com",
+        "role": "user",
+        "registered": "2025-12-03",
+        "login": "ivan"
+    },
+    {
+        "id": 3,
+        "name": "Адміністратор",
+        "email": "admin@gmail.com",
+        "role": "admin",
+        "registered": "2026-01-01",
+        "login": "admin"
+    },
+    {
+        "id": 4,
+        "name": "Користувач",
+        "email": "user@gmail.com",
+        "role": "user",
+        "registered": "2026-01-15",
+        "login": "user"
+    },
+    {
+        "id": 5,
+        "name": "artorias",
+        "email": "artorias@gmail.com",
+        "role": "user",
+        "registered": "2026-05-31",
+        "login": "artorias_ashen_one"
+    }
 ]

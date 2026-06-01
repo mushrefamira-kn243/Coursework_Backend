@@ -34,7 +34,7 @@ class Database
 
     private function initialize()
     {
-        // Initialize database using SQL script if present
+         
         $sqlFile = __DIR__ . '/../../db/database.sql';
         $hasTables = false;
         try {
@@ -48,11 +48,11 @@ class Database
 
         if (!$hasTables && file_exists($sqlFile)) {
             $sql = file_get_contents($sqlFile);
-            // split on ";\n" might not be perfect; use exec to run whole script
+             
             $this->pdo->exec($sql);
         }
 
-        // Ensure migrations for added columns and defaults
+         
         $this->migrateTableColumns('products', [
             'image' => "TEXT DEFAULT ''"
         ]);
@@ -67,6 +67,28 @@ class Database
         $this->normalizeUserRoles();
         $this->ensureDefaultUsers();
         $this->seedSampleData();
+        $this->syncJsonFilesFromDatabase();
+    }
+
+    private function syncJsonFilesFromDatabase()
+    {
+        $tables = ['products', 'news', 'users', 'gallery', 'pages'];
+        $dataDir = __DIR__ . '/../../data';
+        if (!is_dir($dataDir)) {
+            mkdir($dataDir, 0777, true);
+        }
+
+        foreach ($tables as $table) {
+            $stmt = $this->pdo->query('SELECT * FROM ' . $table . ' ORDER BY id ASC');
+            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($table === 'users') {
+                foreach ($items as &$item) {
+                    unset($item['password']);
+                }
+                unset($item);
+            }
+            file_put_contents($dataDir . '/' . $table . '.json', json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
     }
 
     private function normalizeUserRoles()

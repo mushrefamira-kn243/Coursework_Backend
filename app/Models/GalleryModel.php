@@ -21,6 +21,8 @@ class GalleryModel extends BaseModel
             $stmt->execute(compact('title', 'image', 'caption', 'id'));
         }
 
+        $this->exportToJson();
+
         return ['success' => true, 'message' => 'Фотографію збережено', 'item' => [
             'id' => $id,
             'title' => $title,

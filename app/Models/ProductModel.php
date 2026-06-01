@@ -24,6 +24,8 @@ class ProductModel extends BaseModel
             $stmt->execute(compact('name', 'category', 'price', 'description', 'stock', 'image', 'id'));
         }
 
+        $this->exportToJson();
+
         return ['success' => true, 'message' => 'Збережено', 'item' => [
             'id' => $id,
             'name' => $name,

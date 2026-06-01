@@ -33,6 +33,19 @@ abstract class BaseModel extends Model
         if ($stmt->rowCount() === 0) {
             return ['success' => false, 'message' => 'Запис не знайдено'];
         }
+        $this->exportToJson();
         return ['success' => true, 'message' => 'Видалено'];
+    }
+
+    public function exportToJson(): void
+    {
+        $items = $this->getAll();
+        if ($this->table === 'users') {
+            foreach ($items as &$item) {
+                unset($item['password']);
+            }
+            unset($item);
+        }
+        $this->saveData($this->table . '.json', $items);
     }
 }

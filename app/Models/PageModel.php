@@ -21,6 +21,8 @@ class PageModel extends BaseModel
             $stmt->execute(compact('slug', 'title', 'content', 'id'));
         }
 
+        $this->exportToJson();
+
         return ['success' => true, 'message' => 'Сторінку збережено', 'item' => [
             'id' => $id,
             'slug' => $slug,

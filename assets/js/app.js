@@ -114,9 +114,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Cart, product modal and theme toggle
+ 
 document.addEventListener('click', function (e) {
-    // Quick add button handling
+     
     const quick = e.target.closest('.quick-add');
     if (quick) {
         e.preventDefault();
@@ -135,7 +135,7 @@ document.addEventListener('click', function (e) {
         return;
     }
 
-    // Open product modal when clicking product card
+     
     const card = e.target.closest('.product-card');
     if (card && card.dataset && card.dataset.item) {
         const item = JSON.parse(card.dataset.item);
@@ -207,7 +207,7 @@ function openProductModal(item) {
         });
     });
 
-    // comments load
+    
     loadComments(item.id);
     const form = modal.querySelector('#modal-comment-form');
     form.addEventListener('submit', function (ev) {
@@ -270,7 +270,7 @@ function updateCartCount(){
     });
 }
 
-// theme toggle
+ 
 document.addEventListener('DOMContentLoaded', function(){
     const toggle = document.getElementById('theme-toggle');
     const cartLink = document.getElementById('cart-link');
