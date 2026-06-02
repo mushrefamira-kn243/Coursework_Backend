@@ -212,11 +212,24 @@ class AdminController extends Controller
         }
 
         $data = $this->loadModuleData($module);
-        $this->renderLayout('admin/' . $module, [
+        $params = [
             'module' => $module,
             'title' => $this->modules[$module],
             'items' => $data
-        ]);
+        ];
+
+        // for products module provide existing categories for select list
+        if ($module === 'products') {
+            try {
+                $db = Database::getInstance()->getConnection();
+                $stmt = $db->query('SELECT DISTINCT category FROM products ORDER BY category ASC');
+                $params['categories'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            } catch (Exception $e) {
+                $params['categories'] = [];
+            }
+        }
+
+        $this->renderLayout('admin/' . $module, $params);
     }
 
     private function loadModuleData(string $module): array

@@ -44,6 +44,15 @@ class AuthController extends Controller
                 return;
             }
 
+            // Validate email format
+            if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->renderLayout('register', [
+                    'error' => 'Неправильний формат електронної пошти',
+                    'data' => $_POST
+                ]);
+                return;
+            }
+
             $userModel = new UserModel();
             $result = $userModel->save([
                 'login' => $login,

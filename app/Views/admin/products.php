@@ -46,7 +46,18 @@
         <form id="admin-form" data-module="products">
             <input type="hidden" name="id" value="0">
             <label>Назва інструменту<input type="text" name="name" required></label>
-            <label>Категорія<input type="text" name="category" required></label>
+            <label>Категорія
+                <select name="category" required>
+                    <?php $cats = $categories ?? []; ?>
+                    <?php if (empty($cats)): ?>
+                        <option value="">-- Немає категорій --</option>
+                    <?php else: ?>
+                        <?php foreach ($cats as $c): ?>
+                            <option value="<?= htmlspecialchars($c, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($c) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+            </label>
             <label>Ціна<input type="number" step="0.01" name="price" required></label>
             <label>Фото (URL)<input type="url" name="image" placeholder="https://..."></label>
             <label>Наявність<input type="number" name="stock" required></label>

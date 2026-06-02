@@ -31,6 +31,10 @@ class UserModel extends BaseModel
             return ['success' => false, 'message' => 'Логін обов’язковий'];
         }
 
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ['success' => false, 'message' => 'Неправильний формат електронної пошти'];
+        }
+
         if ($id === 0 && $password === '') {
             return ['success' => false, 'message' => 'Пароль обов’язковий'];
         }
